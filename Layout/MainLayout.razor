@@ -1,0 +1,35 @@
+﻿@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inherits LayoutComponentBase
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <h3>Welcome, @userSession</h3>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+
+@code {
+    private string userSession = "Guest";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var storedUser = await localStorage.GetItemAsync<string>("userSession");
+        if (!string.IsNullOrEmpty(storedUser))
+        {
+            userSession = storedUser;
+        }
+    }
+
+    private async Task SetUserSession(string username)
+    {
+        userSession = username;
+        await localStorage.SetItemAsync("userSession", username);
+    }
+}
